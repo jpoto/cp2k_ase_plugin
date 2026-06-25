@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cp2k-plugin"
+version = "0.1.0"
+description = "CP2K calculator plugin for ASE"
+readme = "README.md"
+requires-python = ">=3.10"
+license = 'LGPL-2.1-or-later'
+authors = [
+    {name = "CP2K Developers", email = "cp2k@googlegroups.com"},
+]
+dependencies = ["ase>=3.23.0"]
+
+[project.urls]
+Homepage = "https://github.com/cp2k/cp2k_ase_plugin"
+
+[project.optional-dependencies]
+test = ["pytest", "pytest-cov"]
+doc = ["sphinx", "sphinx-rtd-theme"]
+
+[project.entry-points."ase.plugins"]
+cp2k = "cp2k._ase_plugin"
+
