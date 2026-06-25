@@ -20,7 +20,8 @@ pip install -e .
 
 ## Requirements
 
-- ASE >= 3.23.0 (https://docs.ase-lib.org/install.html) 
+- ASE >= 3.23.0 (https://docs.ase-lib.org/install.html)
+  currently using (https://gitlab.com/ase/ase/-/tree/ase4-plugins-all-calculators) 
 - CP2K (https://github.com/cp2k/cp2k/blob/master/INSTALL.md)
 
 ## Usage
