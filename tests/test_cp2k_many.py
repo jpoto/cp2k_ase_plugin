@@ -5,6 +5,7 @@ Author: Ole Schuett <ole.schuett@mat.ethz.ch>
 Author: Johann Pototschnig <j.pototschnig@hzdr.de>
 """
 
+import os
 import tempfile
 
 import pytest
@@ -26,14 +27,9 @@ def make_h2():
     return h2
 
 
-def get_cp2k_calc(**kwargs):
-    return CP2K(**kwargs)
-
-
 def test_geoopt():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        atoms = make_h2()
-        calc = get_cp2k_calc(directory=tmpdir, label="test_H2_GOPT", print_level="LOW")
+    atoms = make_h2()
+    with CP2K(label="test_H2_GOPT", print_level="LOW") as calc:
         atoms.calc = calc
 
         with BFGS(atoms, logfile=None) as gopt:
@@ -49,9 +45,8 @@ def test_geoopt():
 
 
 def test_h2_lda():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        atoms = make_h2()
-        calc = get_cp2k_calc(directory=tmpdir, label="test_H2_LDA")
+    atoms = make_h2()
+    with CP2K(label="test_H2_LDA") as calc:
         atoms.calc = calc
         energy = atoms.get_potential_energy()
         energy_ref = -30.6989595886
@@ -60,14 +55,12 @@ def test_h2_lda():
 
 
 def test_h2_libxc():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        atoms = make_h2()
-        calc = get_cp2k_calc(
-            directory=tmpdir,
-            xc="XC_GGA_X_PBE XC_GGA_C_PBE",
-            pseudo_potential="GTH-PBE",
-            label="test_H2_libxc",
-        )
+    atoms = make_h2()
+    with CP2K(
+        xc="XC_GGA_X_PBE XC_GGA_C_PBE",
+        pseudo_potential="GTH-PBE",
+        label="test_H2_libxc",
+    ) as calc:
         atoms.calc = calc
         energy = atoms.get_potential_energy()
         energy_ref = -31.591716529642
@@ -76,16 +69,15 @@ def test_h2_libxc():
 
 
 def test_h2_ls():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        atoms = make_h2()
-        inp = """&FORCE_EVAL
-               &DFT
-                 &QS
-                   LS_SCF ON
-                 &END QS
-               &END DFT
-             &END FORCE_EVAL"""
-        calc = get_cp2k_calc(directory=tmpdir, label="test_H2_LS", inp=inp)
+    atoms = make_h2()
+    inp = """&FORCE_EVAL
+              &DFT
+                &QS
+                  LS_SCF ON
+                &END QS
+              &END DFT
+            &END FORCE_EVAL"""
+    with CP2K(label="test_H2_LS", inp=inp) as calc:
         atoms.calc = calc
         energy = atoms.get_potential_energy()
         energy_ref = -30.6989581747
@@ -94,9 +86,8 @@ def test_h2_ls():
 
 
 def test_h2_pbe():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        atoms = make_h2()
-        calc = get_cp2k_calc(directory=tmpdir, xc="PBE", label="test_H2_PBE")
+    atoms = make_h2()
+    with CP2K(xc="PBE", label="test_H2_PBE") as calc:
         atoms.calc = calc
         energy = atoms.get_potential_energy()
         energy_ref = -31.5917284949
@@ -105,8 +96,7 @@ def test_h2_pbe():
 
 
 def test_md():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        calc = get_cp2k_calc(directory=tmpdir, label="test_H2_MD")
+    with CP2K(label="test_H2_MD") as calc:
         positions = [(0, 0, 0), (0, 0, 0.7245595)]
         atoms = Atoms("HH", positions=positions, calculator=calc)
         atoms.center(vacuum=2.0)
@@ -121,15 +111,13 @@ def test_md():
 
 
 def test_o2():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        calc = get_cp2k_calc(
-            directory=tmpdir,
-            label="test_O2",
-            uks=True,
-            cutoff=150 * units.Rydberg,
-            basis_set="SZV-MOLOPT-SR-GTH",
-            multiplicity=3,
-        )
+    with CP2K(
+        label="test_O2",
+        uks=True,
+        cutoff=150 * units.Rydberg,
+        basis_set="SZV-MOLOPT-SR-GTH",
+        multiplicity=3,
+    ) as calc:
         o2 = molecule("O2", calculator=calc)
         o2.center(vacuum=2.0)
         energy = o2.get_potential_energy()
@@ -141,24 +129,25 @@ def test_o2():
 def test_restart():
     with tempfile.TemporaryDirectory() as tmpdir:
         atoms = make_h2()
-        calc = get_cp2k_calc(directory=tmpdir)
+        calc = CP2K(directory=tmpdir)
         atoms.calc = calc
         atoms.get_potential_energy()
-        calc.write("test_restart")
-        calc2 = get_cp2k_calc(directory=tmpdir, restart="test_restart")
+        calc.write(os.path.join(tmpdir, "test_restart"))
+        calc2 = CP2K(directory=tmpdir, restart=os.path.join(tmpdir, "test_restart"))
         assert not calc2.calculation_required(atoms, ["energy"])
+        calc.close()
+        calc2.close()
 
 
 def test_unknown_keywords():
     with pytest.raises(CalculatorSetupError):
-        get_cp2k_calc(dummy_nonexistent_keyword="hello")
+        CP2K(dummy_nonexistent_keyword="hello")
 
 
 def test_close():
     """Ensure we cleanly close the calculator and then restart it"""
-    with tempfile.TemporaryDirectory() as tmpdir:
-        atoms = make_h2()
-        calc = get_cp2k_calc(directory=tmpdir, label="test_H2_GOPT", print_level="LOW")
+    atoms = make_h2()
+    with CP2K(label="test_H2_GOPT", print_level="LOW") as calc:
         assert calc._shell is not None
         calc.get_potential_energy(atoms)
 
@@ -170,19 +159,17 @@ def test_close():
         atoms.rattle(0.01)
         calc.get_potential_energy(atoms)
         assert calc._shell is not None
-        calc.close()
 
 
 def test_context():
     """Ensure we can use the CP2K shell as a context manager"""
-    with tempfile.TemporaryDirectory() as tmpdir:
-        atoms = make_h2()
+    atoms = make_h2()
 
-        with get_cp2k_calc(directory=tmpdir, label="test_H2_GOPT", print_level="LOW") as calc:
-            atoms.calc = calc
-            atoms.get_potential_energy()
-            child = calc._shell._child
-        assert child.poll() == 0
+    with CP2K(label="test_H2_GOPT", print_level="LOW") as calc:
+        atoms.calc = calc
+        atoms.get_potential_energy()
+        child = calc._shell._child
+    assert child.poll() == 0
 
 
 @pytest.mark.xfail()
@@ -193,11 +180,8 @@ def test_set_pos_file():
     When that happens, remove the `xfail` decorator
     and change 2024.X in `cp2k.py` to the new version number. -wardlt
     """
-    with tempfile.TemporaryDirectory() as tmpdir:
-        atoms = make_h2()
+    atoms = make_h2()
 
-        with get_cp2k_calc(
-            directory=tmpdir, label="test_H2_GOPT", print_level="LOW", set_pos_file=True
-        ) as calc:
-            atoms.calc = calc
-            atoms.get_potential_energy()
+    with CP2K(label="test_H2_GOPT", print_level="LOW", set_pos_file=True) as calc:
+        atoms.calc = calc
+        atoms.get_potential_energy()

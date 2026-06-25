@@ -5,10 +5,7 @@ Author: Ole Schuett <ole.schuett@mat.ethz.ch>
 Author: Johann Pototschnig <j.pototschnig@hzdr.de>
 """
 
-import tempfile
-
 import numpy as np
-import pytest
 
 from ase.build import bulk
 from cp2k_plugin import CP2K
@@ -49,14 +46,11 @@ def test_cp2k_stress():
                   &END MM
                 &END FORCE_EVAL"""
 
-    with tempfile.TemporaryDirectory() as tmpdir:
-        calc = CP2K(
-            directory=tmpdir,
-            label="test_stress",
-            inp=inp,
-            force_eval_method="Fist"
-        )
-
+    with CP2K(
+        label="test_stress",
+        inp=inp,
+        force_eval_method="Fist"
+    ) as calc:
         vol0 = 4 * 0.91615977036
         a0 = vol0 ** (1 / 3)
 

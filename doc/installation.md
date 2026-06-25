@@ -46,6 +46,29 @@ You can configure the CP2K command in several ways:
 
 **Note**: Any number of MPI processes should work, but large numbers can slow down the tests. Use `OMP_NUM_THREADS=1` to avoid thread exhaustion.
 
+## Working Directory
+
+**Important**: Always specify a working directory via `directory=...` to keep output files.
+If `directory=None` (the default), a temporary directory is created and auto-cleaned on `close()`.
+
+```python
+from cp2k_plugin import CP2K
+
+calc = CP2K(directory="/path/to/output")
+```
+
+To use a temporary directory (files are deleted when the calculator is closed):
+
+```python
+from cp2k_plugin import CP2K
+import tempfile
+
+with tempfile.TemporaryDirectory() as tmpdir:
+    calc = CP2K(directory=tmpdir)
+    # ... use calculator ...
+# Files in tmpdir are cleaned up here
+```
+
 ### CP2K data directory
 
 Set the `CP2K_DATA_DIR` environment variable to point to the directory containing CP2K basis sets and pseudopotentials:

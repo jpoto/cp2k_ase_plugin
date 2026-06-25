@@ -8,7 +8,9 @@ Author: Ole Schuett <ole.schuett@mat.ethz.ch>
 
 import os
 import os.path
+import shutil
 import subprocess
+import tempfile
 from contextlib import AbstractContextManager
 from warnings import warn
 
@@ -208,6 +210,12 @@ class CP2K(Calculator, AbstractContextManager):
         self.parameters = None
         self.results = None
         self.atoms = None
+        self._temp_dir = None
+
+        # Auto-create temp directory if directory=None
+        if kwargs.get('directory') is None and 'directory' not in kwargs:
+            self._temp_dir = tempfile.mkdtemp()
+            kwargs['directory'] = self._temp_dir
 
         # Several places are check to determine self.command
         if command is not None:
@@ -236,11 +244,16 @@ class CP2K(Calculator, AbstractContextManager):
         self.close()
 
     def close(self):
-        """Close the attached shell"""
+        """Close the attached shell and cleanup temp directory"""
         if self._shell is not None:
             self._shell.close()
             self._shell = None
             self._force_env_id = None  # Force env must be recreated
+
+        # Cleanup temp directory if auto-created
+        if self._temp_dir is not None:
+            shutil.rmtree(self._temp_dir, ignore_errors=True)
+            self._temp_dir = None
 
     def set(self, **kwargs):
         """Set parameters like set(key1=value1, key2=value2, ...)."""

@@ -40,15 +40,18 @@ inp = """\
 def test_dcd():
     cp2k_main = cfg.parser.get("cp2k", "cp2k_main", fallback=None)
     if cp2k_main is None:
-        pytest.skip("Missing cp2k configuration. Add to ~/.config/ase/config.ini:\n\n[cp2k]\ncp2k_main = env OMP_NUM_THREADS=1 mpiexec -np 4 /path/to/cp2k.psmp")
+        pytest.skip(
+            "Missing cp2k configuration. Add to ~/.config/ase/config.ini:\n\n"
+            "[cp2k]\ncp2k_main = env OMP_NUM_THREADS=1 mpiexec -np 4 /path/to/cp2k.psmp"
+        )
 
     with tempfile.TemporaryDirectory() as tmpdir:
-        calc = CP2K(directory=tmpdir, label="test_dcd", inp=inp)
-        h2 = molecule("H2", calculator=calc)
-        h2.center(vacuum=2.0)
-        h2.set_pbc(True)
-        energy = h2.get_potential_energy()
-        assert energy is not None
+        with CP2K(label="test_dcd", inp=inp, directory=tmpdir) as calc:
+            h2 = molecule("H2", calculator=calc)
+            h2.center(vacuum=2.0)
+            h2.set_pbc(True)
+            energy = h2.get_potential_energy()
+            assert energy is not None
 
         subprocess.check_call(
             f"cd {tmpdir} && {cp2k_main} -i test_dcd.inp -o test_dcd.out",

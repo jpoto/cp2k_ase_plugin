@@ -26,13 +26,16 @@ pip install -e .
 
 ## Usage
 
+**Important**: Always specify a working directory via `directory=...` to keep output files.
+If `directory=None` (the default), a temporary directory is created and auto-cleaned on `close()`.
+
 ### Via plugin system
 
 ```python
 from ase._4.plugins import plugins
 
 CP2K = plugins.calculators['cp2k'].implementation()
-calc = CP2K()
+calc = CP2K(directory="/path/to/output")
 ```
 
 ### Direct import
@@ -40,7 +43,7 @@ calc = CP2K()
 ```python
 from cp2k_plugin import CP2K
 
-calc = CP2K()
+calc = CP2K(directory="/path/to/output")
 ```
 
 ## CP2K Executable Configuration
