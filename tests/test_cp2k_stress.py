@@ -46,11 +46,7 @@ def test_cp2k_stress():
                   &END MM
                 &END FORCE_EVAL"""
 
-    with CP2K(
-        label="test_stress",
-        inp=inp,
-        force_eval_method="Fist"
-    ) as calc:
+    with CP2K(label="test_stress", inp=inp, force_eval_method="Fist") as calc:
         vol0 = 4 * 0.91615977036
         a0 = vol0 ** (1 / 3)
 

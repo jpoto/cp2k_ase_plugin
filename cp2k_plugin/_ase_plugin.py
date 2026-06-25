@@ -12,8 +12,7 @@ try:
     from ase._4.plugins.calculator import CalculatorPlugin
 except ImportError:
     warnings.warn(
-        "ASE < 4 detected. cp2k requires ASE >= 4. "
-        "Plugin registration skipped.",
+        "ASE < 4 detected. cp2k requires ASE >= 4. Plugin registration skipped.",
         UserWarning,
     )
 
@@ -31,4 +30,3 @@ else:
         configurable=True,
     )
     __ase_plugins__ = {cp2k_plugin}
-
