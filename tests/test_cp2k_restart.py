@@ -11,9 +11,7 @@ import pytest
 from ase.io.cp2k import read_cp2k_restart
 
 
-@pytest.fixture
-def inp():
-    return StringIO("""\
+inp = StringIO("""\
  # Version information for this restart file
  &MOTION
    &CELL_OPT
@@ -31,9 +29,9 @@ def inp():
        MULTIPLE_UNIT_CELL  1 1 1
      &END CELL
      &COORD
-C   -3.7242617044497828E+00    7.9038234645202037E+00    3.4613477913211641E+00
-C1   -2.9068950543864061E+00    4.7668576748644087E+00    5.8444011777519380E+00
-cu1    1.6455807102639135E+00    5.4728919446731368E+00    5.7625128629895181E+00
+ C   -3.7242617044497828E+00    7.9038234645202037E+00    3.4613477913211641E+00
+ C1   -2.9068950543864061E+00    4.7668576748644087E+00    5.8444011777519380E+00
+ cu1    1.6455807102639135E+00    5.4728919446731368E+00    5.7625128629895181E+00
      &END COORD
    &END SUBSYS
    &PRINT
@@ -42,7 +40,7 @@ cu1    1.6455807102639135E+00    5.4728919446731368E+00    5.7625128629895181E+0
 """)
 
 
-def test_restart(inp):
+def test_restart():
     mol = read_cp2k_restart(inp)
     assert len(mol) == 3
     assert (mol.get_pbc() == [True, True, False]).all()

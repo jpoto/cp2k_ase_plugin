@@ -3,7 +3,7 @@
 ## CP2K Class
 
 ```python
-class cp2k.CP2K(
+class cp2k_plugin.CP2K(
     restart=None,
     directory='.',
     label=None,
@@ -109,12 +109,12 @@ with CP2K() as calc:
 
 ## Plugin Registration
 
-### `cp2k._ase_plugin`
+### `cp2k_plugin._ase_plugin`
 
 Contains the ASE v4 plugin registration.
 
 ```python
-from cp2k import _ase_plugin
+from cp2k_plugin import _ase_plugin
 
 print(_ase_plugin.__ase_plugins__)
 ```
@@ -126,7 +126,7 @@ print(_ase_plugin.__ase_plugins__)
 | `name` | str | Plugin name ('cp2k') |
 | `long_name` | str | Full descriptive name |
 | `citation` | str | Citation information |
-| `implementation` | str | Implementation path |
+| `implementation` | str | Implementation path ('cp2k_plugin.CP2K') |
 | `configurable` | bool | Uses ase.config |
 
 ## Environment Variables

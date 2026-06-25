@@ -6,7 +6,7 @@ Calculate the energy and forces for a water molecule:
 
 ```python
 from ase.build import molecule
-from cp2k import CP2K
+from cp2k_plugin import CP2K
 
 atoms = molecule('H2O')
 atoms.center(vacuum=5.0)
@@ -29,7 +29,7 @@ Optimize the structure of an ethanol molecule:
 ```python
 from ase.build import molecule
 from ase.optimize import BFGS
-from cp2k import CP2K
+from cp2k_plugin import CP2K
 
 atoms = molecule('CH3CH2OH')
 atoms.center(vacuum=8.0)
@@ -51,7 +51,7 @@ Run ab initio molecular dynamics:
 from ase.build import molecule
 from ase.md.verlet import VelocityVerlet
 from ase.md import MDLogger
-from cp2k import CP2K
+from cp2k_plugin import CP2K
 
 atoms = molecule('H2')
 atoms.center(vacuum=5.0)
@@ -72,7 +72,7 @@ Run NPT ensemble molecular dynamics:
 from ase.build import bulk
 from ase.md.npt import NPT
 from ase.units import fs
-from cp2k import CP2K
+from cp2k_plugin import CP2K
 
 atoms = bulk('NaCl', 'rocksalt', a=5.64)
 atoms.set_temperature(300)
@@ -89,7 +89,7 @@ Calculate the band structure:
 
 ```python
 from ase.build import graphene_nanoribbon
-from cp2k import CP2K
+from cp2k_plugin import CP2K
 from ase.dft.band_structure import BandStructure
 
 atoms = graphene_nanoribbon(5, 5, type='armchair')
@@ -106,7 +106,7 @@ Calculate the density of states:
 
 ```python
 from ase.build import molecule
-from cp2k import CP2K
+from cp2k_plugin import CP2K
 
 atoms = molecule('C2H4')
 atoms.center(vacuum=5.0)
@@ -123,7 +123,7 @@ Calculate vibrational frequencies:
 ```python
 from ase.build import molecule
 from ase.vibrations import Vibrations
-from cp2k import CP2K
+from cp2k_plugin import CP2K
 
 atoms = molecule('H2O')
 atoms.center(vacuum=5.0)
@@ -141,7 +141,7 @@ Pass custom CP2K input:
 
 ```python
 from ase.build import molecule
-from cp2k import CP2K
+from cp2k_plugin import CP2K
 
 atoms = molecule('H2')
 atoms.center(vacuum=5.0)

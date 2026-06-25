@@ -21,7 +21,7 @@ pip install -e .
 ## Requirements
 
 - ASE >= 3.23.0 (https://docs.ase-lib.org/install.html)
-  currently using (https://gitlab.com/ase/ase/-/tree/ase4-plugins-all-calculators) 
+  currently using (https://gitlab.com/ase/ase/-/tree/ase4-plugins-all-calculators)
 - CP2K (https://github.com/cp2k/cp2k/blob/master/INSTALL.md)
 
 ## Usage
@@ -35,6 +35,14 @@ CP2K = plugins.calculators['cp2k'].implementation()
 calc = CP2K()
 ```
 
+### Direct import
+
+```python
+from cp2k_plugin import CP2K
+
+calc = CP2K()
+```
+
 ## CP2K Executable Configuration
 
 The CP2K executable is launched via **CP2K-shell** (the interactive socket-mode
@@ -44,13 +52,13 @@ order to locate the command:
 ### 1. Command parameter (highest priority)
 
 ```python
-calc = CP2K(command="mpiexec -n 4 cp2k.psmp -s")
+calc = CP2K(command="mpiexec -np 4 cp2k.psmp -s")
 ```
 
 ### 2. Class variable
 
 ```python
-CP2K.command = "mpiexec -n 4 cp2k.psmp -s"
+CP2K.command = "mpiexec -np 4 cp2k.psmp -s"
 calc = CP2K()
 ```
 
@@ -60,13 +68,16 @@ Set in `~/.config/ase/config.ini`:
 
 ```ini
 [cp2k]
-cp2k_shell = mpirun -n 4 cp2k.psmp -s
+cp2k_shell = env OMP_NUM_THREADS=1 mpiexec -np 4 /path/to/cp2k.psmp -s
+cp2k_main = env OMP_NUM_THREADS=1 mpiexec -np 4 /path/to/cp2k.psmp
 ```
+
+The `cp2k_main` setting is used for tests that run CP2K directly (e.g., DCD file generation).
 
 ### 4. Environment variable
 
 ```bash
-export ASE_CP2K_COMMAND="mpiexec -n 4 cp2k.psmp -s"
+export ASE_CP2K_COMMAND="mpiexec -np 4 cp2k.psmp -s"
 ```
 
 ### 5. Default (lowest priority)
@@ -96,7 +107,7 @@ However, the CP2K calculator is designed around CP2K-shell and the
 
 If you use this plugin in your research, please cite:
 
-- M. Iannuzzi et al., “The CP2K Program Package Made Simple,” J. Phys. Chem. B, vol. 130, pp. 1237, 2026, (https://doi.org/10.1021/acs.jpcb.5c05851)
+- M. Iannuzzi et al., "The CP2K Program Package Made Simple," J. Phys. Chem. B, vol. 130, pp. 1237, 2026, (https://doi.org/10.1021/acs.jpcb.5c05851)
 - CP2K developers (https://www.cp2k.org/)
 
 ## License
@@ -109,8 +120,32 @@ See the [doc/](doc/) directory for detailed documentation.
 
 ## Testing
 
+The tests require CP2K compiled with the toolchain and at least 4 MPI processes.
+
+### Configure CP2K Command
+
+Set the CP2K executable in `~/.config/ase/config.ini`:
+
+```ini
+[cp2k]
+cp2k_shell = env OMP_NUM_THREADS=1 mpiexec -np 4 /path/to/build_cp2k/install/bin/cp2k.psmp -s
+cp2k_main = env OMP_NUM_THREADS=1 mpiexec -np 4 /path/to/build_cp2k/install/bin/cp2k.psmp
+```
+
+Replace `/path/to/build_cp2k/install/bin/cp2k.psmp` with your actual CP2K installation path.
+Use 4 MPI processes with `OMP_NUM_THREADS=1` to avoid thread exhaustion.
+
+### Run Tests
+
 ```bash
-pytest cp2k/tests/
+# Activate ASE environment
+source ~/venvs/ase/bin/activate
+
+# Source CP2K environment (if using toolchain)
+source /path/to/build_cp2k/install/cp2k_env
+
+# Run tests
+pytest tests/ -v
 ```
 
 ## Contributing

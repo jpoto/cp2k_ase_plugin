@@ -12,17 +12,11 @@ Please follow the [CP2K installation instructions](https://github.com/cp2k/cp2k/
 
 ## Installing cp2k-plugin
 
-### From PyPI
-
-```bash
-pip install cp2k-plugin
-```
-
 ### From source
 
 ```bash
-git clone https://github.com/cp2k/cp2k_plugin.git
-cd cp2k
+git clone https://github.com/cp2k/cp2k_ase_plugin.git
+cd cp2k_plugin
 pip install -e .
 ```
 
@@ -34,20 +28,23 @@ You can configure the CP2K command in several ways:
 
 1. **Environment variable:**
    ```bash
-   export ASE_CP2K_COMMAND="mpirun -n 4 cp2k.psmp -s"
+   export ASE_CP2K_COMMAND="env OMP_NUM_THREADS=1 mpirun -n 4 cp2k.psmp -s"
    ```
 
 2. **ASE configuration file** (`~/.config/ase/config.ini`):
    ```ini
    [cp2k]
-   command = mpirun -n 4 cp2k.psmp -s
+   cp2k_shell = env OMP_NUM_THREADS=1 mpirun -n 4 cp2k.psmp -s
+   cp2k_main = env OMP_NUM_THREADS=1 mpirun -n 4 cp2k.psmp
    ```
 
 3. **Python code:**
    ```python
-   from cp2k import CP2K
-   calc = CP2K(command="mpirun -n 4 cp2k.psmp -s")
+   from cp2k_plugin import CP2K
+   calc = CP2K(command="env OMP_NUM_THREADS=1 mpirun -n 4 cp2k.psmp -s")
    ```
+
+**Note**: Use 4 MPI processes with `OMP_NUM_THREADS=1` to avoid thread exhaustion.
 
 ### CP2K data directory
 
@@ -62,6 +59,6 @@ export CP2K_DATA_DIR=/path/to/cp2k/data
 To verify the installation:
 
 ```python
-from cp2k import CP2K
+from cp2k_plugin import CP2K
 print(CP2K)
 ```

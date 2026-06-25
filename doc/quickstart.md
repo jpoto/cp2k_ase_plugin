@@ -6,7 +6,7 @@ Here's a simple example of running a DFT calculation with CP2K:
 
 ```python
 from ase.build import molecule
-from cp2k import CP2K
+from cp2k_plugin import CP2K
 
 atoms = molecule('H2')
 atoms.center(vacuum=5.0)
@@ -24,7 +24,7 @@ print(f"Forces:\n{forces}")
 ```python
 from ase.build import molecule
 from ase.optimize import BFGS
-from cp2k import CP2K
+from cp2k_plugin import CP2K
 
 atoms = molecule('H2O')
 atoms.center(vacuum=5.0)
@@ -42,7 +42,7 @@ print(f"Optimized positions:\n{atoms.positions}")
 from ase.build import molecule
 from ase.md.verlet import VelocityVerlet
 from ase.md import MDLogger
-from cp2k import CP2K
+from cp2k_plugin import CP2K
 
 atoms = molecule('H2')
 atoms.center(vacuum=5.0)
@@ -72,7 +72,7 @@ Use the context manager for automatic cleanup:
 
 ```python
 from ase.build import molecule
-from cp2k import CP2K
+from cp2k_plugin import CP2K
 
 atoms = molecule('H2')
 

@@ -27,8 +27,8 @@ else:
             "M. Iannuzzi et al., J. Phys. Chem. B, vol. 130, pp. 1237, 2026, (https://doi.org/10.1021/acs.jpcb.5c05851)\n"
             "CP2K developers (https://www.cp2k.org/)"
         ),
-        implementation="cp2k.cp2k.CP2K",
+        implementation="cp2k_plugin.cp2k_ase_plugin.CP2K",
         configurable=True,
     )
-    __ase_plugins__ = {cp2k_ase_plugin}
+    __ase_plugins__ = {cp2k_plugin}
 
