@@ -1,4 +1,7 @@
-"""Unit test for cp2k import and plugin registration."""
+"""Unit test for cp2k import and plugin registration.
+
+Author: Johann Pototschnig <j.pototschnig@hzdr.de>
+"""
 
 import pytest
 

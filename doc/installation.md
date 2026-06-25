@@ -44,7 +44,7 @@ You can configure the CP2K command in several ways:
    calc = CP2K(command="env OMP_NUM_THREADS=1 mpirun -n 4 cp2k.psmp -s")
    ```
 
-**Note**: Use 4 MPI processes with `OMP_NUM_THREADS=1` to avoid thread exhaustion.
+**Note**: Any number of MPI processes should work, but large numbers can slow down the tests. Use `OMP_NUM_THREADS=1` to avoid thread exhaustion.
 
 ### CP2K data directory
 

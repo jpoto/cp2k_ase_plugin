@@ -120,7 +120,7 @@ See the [doc/](doc/) directory for detailed documentation.
 
 ## Testing
 
-The tests require CP2K compiled with the toolchain and at least 4 MPI processes.
+The tests require CP2K compiled with the toolchain. Any number of MPI processes should work, but large numbers can slow down the tests.
 
 ### Configure CP2K Command
 
@@ -133,7 +133,7 @@ cp2k_main = env OMP_NUM_THREADS=1 mpiexec -np 4 /path/to/build_cp2k/install/bin/
 ```
 
 Replace `/path/to/build_cp2k/install/bin/cp2k.psmp` with your actual CP2K installation path.
-Use 4 MPI processes with `OMP_NUM_THREADS=1` to avoid thread exhaustion.
+Use `OMP_NUM_THREADS=1` to avoid thread exhaustion.
 
 ### Run Tests
 

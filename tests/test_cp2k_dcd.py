@@ -2,6 +2,7 @@
 
 http://www.cp2k.org
 Author: Ole Schuett <ole.schuett@mat.ethz.ch>
+Author: Johann Pototschnig <j.pototschnig@hzdr.de>
 """
 
 import os
