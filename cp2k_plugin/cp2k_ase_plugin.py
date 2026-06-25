@@ -406,7 +406,7 @@ class CP2K(Calculator, AbstractContextManager):
         else:
             lines = content.split('\n')
             if self._shell.version < 2.1:
-                lines = [l.strip() for l in lines]  # save chars
+                lines = [line.strip() for line in lines]
             self._shell.send('WRITE_FILE')
             self._shell.send(fn)
             self._shell.send('%d' % len(lines))
@@ -644,8 +644,8 @@ class InputSection:
                 output.append(f'&{s.name} {s.params}')
             else:
                 output.append(f'&{s.name}')
-            for l in s.write():
-                output.append(f'   {l}')
+            for line in s.write():
+                output.append(f'   {line}')
             output.append(f'&END {s.name}')
         return output
 

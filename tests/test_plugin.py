@@ -3,8 +3,6 @@
 Author: Johann Pototschnig <j.pototschnig@hzdr.de>
 """
 
-import pytest
-
 
 def test_import_calculators():
     """Test that the CP2K calculator can be imported."""
